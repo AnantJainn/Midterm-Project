@@ -344,7 +344,17 @@ screening transactions would gain from the rule.
 \tpart{b}{Other tests we considered}
 The response is binary, the two groups are independent and large (the smallest expected cell
 count is 564), so the normal approximation of the $z$-test holds, and it gives the difference
-in proportions directly.
+in proportions directly. With $x$ single-output transactions out of $n$ in each class,
+$\hat p=x/n$:
+{\small
+\[ z=\frac{\hat p_{\text{ill}}-\hat p_{\text{lic}}}
+   {\sqrt{\bar p(1-\bar p)\bigl(\tfrac{1}{n_{\text{ill}}}+\tfrac{1}{n_{\text{lic}}}\bigr)}},
+   \qquad \bar p=\frac{x_{\text{ill}}+x_{\text{lic}}}{n_{\text{ill}}+n_{\text{lic}}}, \]}%
+$p=1-\Phi(z)$. The Newcombe interval for $d=\hat p_{\text{ill}}-\hat p_{\text{lic}}$ combines
+the Wilson score intervals $(l_i,u_i)$ of the two proportions:
+{\small
+\[ L=d-\sqrt{(\hat p_{\text{ill}}-l_{\text{ill}})^2+(u_{\text{lic}}-\hat p_{\text{lic}})^2}, \]
+\[ U=d+\sqrt{(u_{\text{ill}}-\hat p_{\text{ill}})^2+(\hat p_{\text{lic}}-l_{\text{lic}})^2}. \]}%
 \par
 {\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
@@ -402,7 +412,15 @@ add a 10-point gap so that the effect can be read in wallets.
 
 \tpart{b}{Other tests we considered}
 Two nominal variables, one with three levels, and independent wallets: this is the setting
-of the $\chi^2$ test of independence. The smallest expected count is 2{,}035, far above 5.
+of the $\chi^2$ test of independence. With observed counts $O_{ik}$ (class $i$, pattern $k$),
+row totals $R_i$, column totals $C_k$ and $n$ wallets:
+{\small
+\[ \chi^2=\sum_{i=1}^{2}\sum_{k=1}^{3}\frac{(O_{ik}-E_{ik})^2}{E_{ik}},\qquad
+   E_{ik}=\frac{R_iC_k}{n}, \]
+\[ \nu=(2-1)(3-1)=2,\qquad V=\sqrt{\frac{\chi^2}{n\,(\min(2,3)-1)}}, \]
+\[ r_{ik}=\frac{O_{ik}-E_{ik}}{\sqrt{E_{ik}}}. \]}%
+$r_{ik}$ is the Pearson residual of each cell. The smallest expected count is 2{,}035, far
+above 5.
 \par
 {\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
@@ -431,7 +449,7 @@ Decision & reject $H_0$ \\
 \end{tabularx}}
 
 The association is moderate ($V\approx0.34$) and both intervals clear our thresholds. The
-standardised residuals show where it comes from: illicit pass-through $+155$, illicit
+Pearson residuals $r_{ik}$ show where it comes from: illicit pass-through $+155$, illicit
 receive-only $-67$. Fraud-linked wallets act as relays, not as savings.
 
 %------------------------------------------------------------ Test 3
@@ -458,7 +476,15 @@ is what a monitoring rule could pick up.
 \tpart{b}{Other tests we considered}
 We compare spreads, not means. Brown--Forsythe (Levene with the median) runs a $t$-test on
 the absolute deviations from each group's median, so it does not need normality and gives a
-one-sided p-value.
+one-sided p-value. For log fee rate $x_{ij}$ of transaction $i$ in group $j$, with group
+median $\tilde x_j$:
+{\small
+\[ z_{ij}=|x_{ij}-\tilde x_j|,\qquad
+   t=\frac{\bar z_{\text{ill}}-\bar z_{\text{lic}}}{s_p\sqrt{\tfrac{1}{n_{\text{ill}}}+\tfrac{1}{n_{\text{lic}}}}},
+   \qquad \nu=n_{\text{ill}}+n_{\text{lic}}-2, \]}%
+where $s_p^2$ is the pooled variance of the $z_{ij}$, and $F=t^2$ is Levene's statistic. The
+estimate $s_{\text{ill}}/s_{\text{lic}}$ gets a percentile bootstrap interval: the 2.5th and
+97.5th percentiles of the ratio over 2{,}000 resamples drawn within each group.
 \par
 {\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
@@ -517,7 +543,17 @@ doubles the odds, the level at which flagging a payer's payees is worth an analy
 
 \tpart{b}{Other tests we considered}
 A 2$\times$2 table in each of 48 time steps, independent transactions: CMH tests a common
-odds ratio across strata while comparing like with like in time.
+odds ratio across strata while comparing like with like in time. In time step $k$, $a_k$ =
+exposed illicit, $b_k$ = exposed licit, $c_k$ = unexposed illicit, $d_k$ = unexposed licit,
+$n_k=a_k+b_k+c_k+d_k$:
+{\small
+\[ \chi^2_{\text{CMH}}=\frac{\bigl[\sum_k\bigl(a_k-\mathrm{E}(a_k)\bigr)\bigr]^2}{\sum_k\mathrm{Var}(a_k)},
+   \qquad \text{OR}_{\text{MH}}=\frac{\sum_k a_kd_k/n_k}{\sum_k b_kc_k/n_k}, \]
+\[ \mathrm{E}(a_k)=\frac{(a_k+b_k)(a_k+c_k)}{n_k}, \]
+\[ \mathrm{Var}(a_k)=\frac{(a_k+b_k)(c_k+d_k)(a_k+c_k)(b_k+d_k)}{n_k^2(n_k-1)}. \]}%
+$\nu=1$; the one-sided $p$ is $1-\Phi\bigl(\operatorname{sign}(\text{OR}_{\text{MH}}-1)
+\sqrt{\chi^2_{\text{CMH}}}\bigr)$. The interval uses the Robins--Breslow--Greenland variance
+of $\ln\text{OR}_{\text{MH}}$.
 \par
 {\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
@@ -574,7 +610,14 @@ level, a drop that would show in an exchange's compliance workload.
 \tpart{b}{Other tests we considered}
 The unit is the time step, not the transaction: transactions in one step share a market, so
 pooling them would overstate the evidence. With 7 values per group we need a small-sample
-test that does not assume equal variances.
+test that does not assume equal variances. With group means $\bar x$, variances $s^2$ and
+sizes $n$ ($a$ = after, $b$ = before):
+{\small
+\[ t=\frac{\bar x_a-\bar x_b}{\sqrt{s_a^2/n_a+s_b^2/n_b}},\qquad
+   \nu=\frac{\bigl(s_a^2/n_a+s_b^2/n_b\bigr)^2}
+   {\frac{(s_a^2/n_a)^2}{n_a-1}+\frac{(s_b^2/n_b)^2}{n_b-1}}, \]}%
+(Welch--Satterthwaite), and the interval is
+$(\bar x_a-\bar x_b)\pm t_{0.975,\nu}\sqrt{s_a^2/n_a+s_b^2/n_b}$.
 \par
 {\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
