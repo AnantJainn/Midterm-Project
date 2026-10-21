@@ -386,8 +386,8 @@ is ``one address in, one address out''.
 {\small
 \begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
 \toprule
-$H_0$ & wallet pattern and class are independent \\
-$H_1$ & they are not independent \\
+$H_0$ & $\pi_{\text{ill},k}=\pi_{\text{lic},k}$ for every pattern $k$ (independence) \\
+$H_1$ & $\pi_{\text{ill},k}\ne\pi_{\text{lic},k}$ for at least one $k$ \\
 Significance level & $\alpha=0.05$ \\
 Side & upper tail of $\chi^2$ (any departure) \\
 Test & Pearson $\chi^2$ test of independence, 2$\times$3 \\
@@ -396,7 +396,7 @@ pass-through share \\
 \bottomrule
 \end{tabularx}}
 
-Pattern: \emph{receive only}, \emph{pass-through} (receives and sends) or \emph{send only}
+$\pi_{c,k}$: share of class-$c$ wallets with pattern $k$: \emph{receive only}, \emph{pass-through} (receives and sends) or \emph{send only}
 (received before the data window). $V=0.10$ is the conventional ``small'' association; we
 add a 10-point gap so that the effect can be read in wallets.
 
