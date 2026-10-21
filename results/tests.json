@@ -1,0 +1,307 @@
+{
+  "T1": {
+    "H0": "p_ill - p_lic <= 0",
+    "H1": "p_ill - p_lic > 0",
+    "side": "one-sided (right)",
+    "test": "two-proportion z-test",
+    "MID": "10 percentage points",
+    "n_ill": 4545,
+    "n_lic": 41500,
+    "p_ill": 0.6490649064906491,
+    "p_lic": 0.06665060240963855,
+    "estimate": 0.5824143040810106,
+    "ci95": [
+      0.5682074309766267,
+      0.59635941862466
+    ],
+    "stat": 113.04710023236917,
+    "df": null,
+    "p": 0.0,
+    "reject": true,
+    "alt": {
+      "pearson_chi2": {
+        "stat": 12779.646870947321,
+        "df": 1,
+        "p_two_sided": 0.0,
+        "z_squared": 12779.646870947323
+      },
+      "fisher_exact": {
+        "odds_ratio": 25.900103586542365,
+        "p_one_sided": 0.0
+      },
+      "welch_t_on_num_outputs": {
+        "t": -10.635486615845945,
+        "df": 41520.43144923216,
+        "p": 2.203478577347297e-26,
+        "mean_ill": 1.3526952695269527,
+        "mean_lic": 6.171493975903615
+      }
+    },
+    "log10_p": -2777.517441699867
+  },
+  "T2": {
+    "H0": "wallet activity pattern is independent of class",
+    "H1": "pattern depends on class",
+    "side": "chi-square (upper tail)",
+    "test": "Pearson chi-square test of independence (2x3)",
+    "MID": "Cramer's V >= 0.10 and a 10-point gap in the pass-through share",
+    "table": {
+      "illicit": {
+        "receive_only": 1753,
+        "pass_through": 9026,
+        "send_only": 3487
+      },
+      "licit": {
+        "receive_only": 138358,
+        "pass_through": 28827,
+        "send_only": 83903
+      }
+    },
+    "row_shares": {
+      "illicit": {
+        "receive_only": 0.1229,
+        "pass_through": 0.6327,
+        "send_only": 0.2444
+      },
+      "licit": {
+        "receive_only": 0.551,
+        "pass_through": 0.1148,
+        "send_only": 0.3342
+      }
+    },
+    "stat": 30396.75796905882,
+    "df": 2,
+    "p": 0.0,
+    "reject": true,
+    "cramers_v": 0.3384549057727299,
+    "cramers_v_ci95": [
+      0.33366168241654054,
+      0.34339949576504747
+    ],
+    "estimate": 0.5178847624575671,
+    "ci95": [
+      0.5098412835680379,
+      0.5258558352202772
+    ],
+    "std_residuals": {
+      "illicit": {
+        "receive_only": -66.6,
+        "pass_through": 155.0,
+        "send_only": -17.7
+      },
+      "licit": {
+        "receive_only": 15.9,
+        "pass_through": -36.9,
+        "send_only": 4.2
+      }
+    },
+    "min_expected": 2035.0584426841126,
+    "alt": {
+      "g_test": {
+        "G": 21428.32318813201,
+        "df": 2,
+        "p": 0.0
+      },
+      "z_pass_through_only": {
+        "z": 172.05537068749504,
+        "p": 0.0
+      },
+      "mann_whitney_total_txs": {
+        "U": 2648220225.0,
+        "p": 0.0
+      }
+    },
+    "log10_p": -6600.572126855471
+  },
+  "T3": {
+    "H0": "sigma_ill >= sigma_lic (log10 fee rate)",
+    "H1": "sigma_ill < sigma_lic",
+    "side": "one-sided (left)",
+    "test": "Brown-Forsythe test",
+    "MID": "SD ratio <= 0.80",
+    "n_ill": 4545,
+    "n_lic": 41452,
+    "excluded_zero_fee": 48,
+    "sd_ill": 0.25475524562823376,
+    "sd_lic": 0.45580848862173445,
+    "estimate": 0.5589085152814027,
+    "ci95": [
+      0.5432241600895569,
+      0.5749060240081995
+    ],
+    "stat": -57.8694081270101,
+    "df": 45995,
+    "p": 0.0,
+    "F_equiv": 3348.868396970462,
+    "levene_median_p_two_sided": 0.0,
+    "reject": true,
+    "fixed_fee_0.0002_share_ill": 0.25412541254125415,
+    "fixed_fee_0.0002_share_lic": 0.08708868088391393,
+    "fixed_fee_0.0002_median_size_ill": 192.0,
+    "alt": {
+      "F_test": {
+        "F": 0.312378728454062,
+        "df": [
+          4544,
+          41451
+        ],
+        "p_one_sided": 0.0
+      },
+      "bartlett": {
+        "stat": 2051.223314995248,
+        "p": 0.0
+      },
+      "fligner_killeen": {
+        "stat": 2537.5055645231328,
+        "p": 0.0
+      },
+      "normality_shapiro_ill_sample": 9.898173784104635e-60,
+      "skew_ill": 1.2190080827779286,
+      "kurt_ill": 1.7817197732573353,
+      "skew_lic": 0.2669320854024189,
+      "kurt_lic": 0.6046467559504567,
+      "within_step_wilcoxon": {
+        "n_steps": 45,
+        "steps_ill_narrower": 41,
+        "W": 106.0,
+        "p_one_sided": 2.2665994947601575e-07,
+        "median_sd_ill": 0.08213058163806164,
+        "median_sd_lic": 0.20557203880101949
+      }
+    },
+    "log10_p": -729.3592012742272
+  },
+  "T4": {
+    "H0": "common odds ratio OR_MH <= 1",
+    "H1": "OR_MH > 1",
+    "side": "one-sided (right)",
+    "test": "Cochran-Mantel-Haenszel test, stratified by time step",
+    "MID": "OR >= 2",
+    "n": 46045,
+    "n_strata_used": 48,
+    "crude_table": [
+      [
+        908.0,
+        322.0
+      ],
+      [
+        3637.0,
+        41178.0
+      ]
+    ],
+    "risk_exposed": 0.7382113821138211,
+    "risk_unexposed": 0.08115586299230168,
+    "estimate": 19.30968048568326,
+    "ci95": [
+      16.705838894300168,
+      22.319367666498543
+    ],
+    "stat": 2905.7227934206867,
+    "df": 1,
+    "z": 53.9047566864065,
+    "p": 0.0,
+    "reject": true,
+    "alt": {
+      "pearson_chi2_crude": {
+        "stat": 5809.424881935712,
+        "df": 1,
+        "p": 0.0
+      },
+      "crude_or": 31.926545152734917,
+      "crude_or_ci95": [
+        27.99062493656058,
+        36.415917390191375
+      ],
+      "crude_rr": 9.096217511528979,
+      "crude_rr_ci95": [
+        8.690870597292175,
+        9.520470025503103
+      ],
+      "fisher_exact_crude": {
+        "odds_ratio": 31.926545152734917,
+        "p_one_sided": 0.0
+      },
+      "breslow_day": {
+        "stat": 234.92934799403173,
+        "p": 0.0,
+        "n_strata": 39,
+        "log10_p": -29.49080275957955
+      },
+      "stratum_or_haldane": {
+        "n_above_1": 46,
+        "n_above_2": 46,
+        "median": 15.307664290340934,
+        "q25_q75": [
+          7.287445100711798,
+          31.69943465335028
+        ]
+      }
+    },
+    "log10_p": -633.1005539192066
+  },
+  "T5": {
+    "H0": "mu_after - mu_before >= 0",
+    "H1": "mu_after - mu_before < 0",
+    "side": "one-sided (left)",
+    "test": "Welch t-test on per-step illicit shares",
+    "MID": "5 percentage points",
+    "steps_before": "36-42",
+    "steps_after": "43-49",
+    "before": [
+      0.0207,
+      0.0897,
+      0.1486,
+      0.0704,
+      0.0927,
+      0.1029,
+      0.1116
+    ],
+    "after": [
+      0.0181,
+      0.0152,
+      0.0042,
+      0.0028,
+      0.0263,
+      0.0764,
+      0.1176
+    ],
+    "mean_before": 0.09093601145118978,
+    "mean_after": 0.03723965215445936,
+    "estimate": -0.05369635929673042,
+    "ci95": [
+      -0.10189469108549215,
+      -0.005498027507968677
+    ],
+    "stat": -2.429897218809299,
+    "df": 11.887718428932876,
+    "p": 0.01595586186287603,
+    "reject": true,
+    "alt": {
+      "student_t": {
+        "t": -2.4298972188092995,
+        "df": 12,
+        "p": 0.015869241228188325
+      },
+      "mann_whitney_exact": {
+        "U": 9.0,
+        "p": 0.026515151515151516
+      },
+      "exact_permutation": {
+        "n_splits": 3432,
+        "p": 0.020104895104895104
+      },
+      "pooled_two_proportion_z": {
+        "z": -15.708567383619867,
+        "p": 6.606562802192106e-56,
+        "n_after": 6597,
+        "n_before": 8417
+      },
+      "levene_median": {
+        "stat": 0.016876375366670127,
+        "p": 0.8987905525838439
+      },
+      "shapiro_before": 0.7804279995652719,
+      "shapiro_after": 0.043267081164719855
+    }
+  }
+}

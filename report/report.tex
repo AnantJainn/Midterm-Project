@@ -1,0 +1,636 @@
+%=======================================================================
+%  CSE558 Data Science - Midterm Project Report
+%  Monsoon 2026, IIIT-Delhi
+%  Built from the course template. Every number below is produced by the
+%  code in src/ (results/*.json); see the README.
+%  Compile with pdfLaTeX (or Tectonic), twice.
+%=======================================================================
+\documentclass[10pt,a4paper,twocolumn]{article}
+
+%========================= EDIT THIS =========================
+\newcommand{\projecttitle}{Follow the money: how fraud-linked Bitcoin
+  transactions and wallets behave differently}
+\newif\ifshowhints
+\showhintsfalse     % \showhintstrue shows the template's grey instruction lines
+%=============================================================
+
+%-------------------------------------------- fonts (no need to edit)
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \IfFileExists{carlito.sty}%
+    {\usepackage[sfdefault]{carlito}}%              Calibri look
+    {\usepackage[scaled=0.92]{helvet}\renewcommand{\familydefault}{\sfdefault}}%
+  \usepackage{courier}
+\else
+  \usepackage[no-math]{fontspec}
+  \setmainfont{Carlito}[Extension=.ttf, UprightFont=*-Regular, BoldFont=*-Bold,
+    ItalicFont=*-Italic, BoldItalicFont=*-BoldItalic]
+\fi
+
+%----------------------------------------------------------- packages
+\usepackage[margin=18mm,bottom=20mm,columnsep=7mm]{geometry}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{needspace}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={\projecttitle},
+            pdfsubject={CSE558 Data Science, Monsoon 2026: Midterm Project Report}}
+
+%------------------------------------------------------------- layout
+\definecolor{eg}{HTML}{7396C4}         % worked example (light blue)
+\definecolor{hintgrey}{gray}{0.58}     % instructions (light grey)
+\definecolor{todo}{HTML}{C0392B}       % fields still to fill in
+
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{12pt}{3pt}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{2pt}
+\newcommand{\sectionbreak}{\needspace{10\baselineskip}}
+\newcommand{\subsectionbreak}{\needspace{10\baselineskip}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlist{leftmargin=1.2em, itemsep=2pt, topsep=2pt, parsep=0pt}
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{4pt}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{K}[1]{>{\raggedright\arraybackslash\bfseries\boldmath}p{#1}}  % bold labels
+
+%--------------------------------------------------------- shorthands
+\newcommand{\hint}[1]{\ifshowhints{\footnotesize\itshape\color{hintgrey}#1\par}\fi}
+\newcommand{\eg}[1]{\textcolor{eg}{#1}}
+\newcommand{\egblock}[1]{{\color{eg}#1\par}}
+\newcommand{\field}[2]{\textbf{#1}~#2\par}
+\newcommand{\tpart}[2]{\par\needspace{12\baselineskip}\smallskip\textbf{#1)~#2}\par}
+\newcommand{\minihead}[1]{\par\needspace{8\baselineskip}\smallskip\textbf{#1}\par}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\todo}[1]{\textcolor{todo}{\textbf{TODO:} #1}}
+\newcommand{\figfile}[2]{%
+  \IfFileExists{figs/#1}%
+    {\includegraphics[width=\linewidth,height=#2,keepaspectratio]{#1}}%
+    {\fbox{\parbox[c][#2][c]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}%
+      {\centering\small\itshape\color{hintgrey}Your plot: \detokenize{#1}}}}}
+\graphicspath{{figs/}}
+
+%=======================================================================
+\begin{document}
+
+\twocolumn[%
+{\small\bfseries CSE558 Data Science\ \ \textbullet\ \ Midterm Project Report\ \ \textbullet\ \ Monsoon 2026\par}
+\vspace{4pt}
+{\LARGE\bfseries\raggedright\projecttitle\par}
+\vspace{6pt}
+\rule{\linewidth}{1pt}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}K{2.4cm} Y@{}}
+\toprule
+Group name & \todo{group name} \\
+Dataset & Elliptic++ (Elmougy \& Liu, KDD 2023): \url{github.com/git-disl/EllipticPlusPlus} \\
+Code & \todo{github.com/\textless user\textgreater/\textless repo\textgreater} (scripts \code{src/01--03}, README, results) \\
+\bottomrule
+\end{tabularx}}
+
+\vspace{2pt}
+{\small
+\begin{tabularx}{\linewidth}{@{}L{0.5cm} L{3.4cm} L{2.3cm} L{4.8cm} Y@{}}
+\toprule
+\textbf{\#} & \textbf{Name} & \textbf{Roll no.} & \textbf{Institute email} & \textbf{Contribution} \\
+\midrule
+1 & \todo{name} & \todo{roll no.} & \todo{email} & \todo{e.g.\ dataset, preparation, Tests 1--2 (1, 2, 3, 5)} \\
+2 & \todo{name} & \todo{roll no.} & \todo{email} & \todo{e.g.\ EDA, Tests 3--5, limitations, README (4, 5, 6)} \\
+\bottomrule
+\end{tabularx}}
+\vspace{12pt}
+]
+
+%-----------------------------------------------------------------------
+\section{Dataset}
+
+\field{Source:}{Elliptic++, released by Georgia Tech with the KDD 2023 paper of Elmougy and
+Liu, which extends the Elliptic Bitcoin dataset of Weber et al.\ (2019). Downloaded on 21
+October 2026 from the Google Drive folder linked in the repository above. Each row is a real
+Bitcoin transaction or wallet address; the blockchain analytics firm Elliptic labelled
+entities as \emph{illicit} (scams, ransomware, malware, Ponzi schemes, dark markets),
+\emph{licit} (exchanges, wallet providers, miners) or \emph{unknown}. The data covers 49 time
+steps of about two weeks each.}
+
+\field{What is raw about it:}{the labels sit in separate files from the features, coded
+1/2/3; 77\% of rows are \emph{unknown}; 965 transactions miss all 17 named features; the
+wallet file repeats an address once for every time step it appears in; amounts and fees are
+extremely skewed; the money trail is only an edge list (who paid whom).}
+
+{\small
+\begin{tabularx}{\linewidth}{@{}L{2.6cm} Y Y@{}}
+\toprule
+ & \textbf{Raw file} & \textbf{After encoding} \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Transactions} (\code{txs\_features} + \code{txs\_classes})} \\
+Instances (rows) & 203{,}769 & 202{,}804 \\
+Attributes (columns) & 185 & 196 \\
+Instances $\times$ attributes & 37{,}697{,}265 & 39{,}749{,}584 \\
+\midrule
+\multicolumn{3}{@{}l}{\textit{Wallets} (\code{wallets\_features} + \code{wallets\_classes})} \\
+Instances (rows) & 1{,}268{,}260 & 822{,}942 \\
+Attributes (columns) & 58 & 66 \\
+Instances $\times$ attributes & 73{,}559{,}080 & 54{,}314{,}172 \\
+\bottomrule
+\end{tabularx}}
+
+\field{Size check:}{transactions: $202{,}804\times196=39{,}749{,}584\ge3{,}000{,}000$;
+wallets: $822{,}942\times66=54{,}314{,}172\ge3{,}000{,}000$. Both tables meet the requirement
+on their own. Even the 17 named transaction features alone give
+$202{,}804\times17=3{,}447{,}668$.}
+
+\minihead{Key features}
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.6cm} L{1.3cm} Y@{}}
+\toprule
+\textbf{Feature} & \textbf{Type} & \textbf{Real-world meaning} \\
+\midrule
+\code{class} & nominal & illicit / licit / unknown; our response \\
+\code{num\_output\_}\allowbreak\code{addresses} & discrete & how many addresses receive money in the transaction \\
+\code{num\_input\_}\allowbreak\code{addresses} & discrete & how many addresses pay into it \\
+\code{fees}, \code{size} & continuous & fee paid to the miner (BTC); transaction size (bytes) \\
+\code{fee\_rate} (derived) & continuous & \code{fees}/\code{size} in satoshi per byte: the price paid for block space \\
+\code{total\_BTC} & continuous & total value moved (BTC) \\
+\code{Time step} & discrete & 1--49, about two weeks each \\
+\code{num\_txs\_as\_sender}, \code{\_receiver} & discrete & a wallet's transactions sending / receiving money \\
+\code{lifetime\_in\_blocks} & discrete & blocks between a wallet's first and last appearance \\
+\bottomrule
+\end{tabularx}}
+
+%-----------------------------------------------------------------------
+\section{Data preparation}
+
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{1.9cm} L{2.3cm} Y@{}}
+\toprule
+\textbf{Issue found} & \textbf{What we did} & \textbf{Why, and not the alternative} \\
+\midrule
+Labels in separate files, coded 1/2/3
+ & joined on \code{txId} / \code{address} (one-to-one, checked); mapped to names; one-hot
+   encoded (\code{is\_illicit}, \code{is\_licit}, \code{is\_unknown})
+ & a code like 3 is not a number: treating it as one would make ``unknown'' three times
+   ``illicit''. \\
+\emph{Unknown} class (77\% of transactions)
+ & kept in the file, left out of every test
+ & unknown is not ``licit'': counting it as licit would dilute the fraud signal with
+   unlabelled fraud. \\
+965 transactions miss all 17 named features
+ & dropped (519 licit, 446 unknown, no illicit)
+ & the 17 are missing \emph{together}, a structural gap in the Elliptic++ augmentation, so
+   imputing would invent whole transactions; no illicit row is lost. \\
+Wallet file: 347{,}569 exact duplicate rows
+ & dropped
+ & they add no information and would count a wallet twice in every test. \\
+61{,}487 wallets still listed in several time steps
+ & collapsed to one row per address; first time step kept
+ & we checked that every wallet feature is constant across these rows: they are whole-life
+   summaries, so the repeats are the same wallet counted again. \\
+Fee rate heavy-tailed (11{,}303 above the IQR fence, max 22{,}614 sat/B)
+ & kept and flagged; tests on fee rate use $\log_{10}$
+ & these are real, urgent payments; capping them would erase exactly the spread that Test 3
+   measures. \\
+67 transactions with zero fee
+ & kept; left out only where $\log_{10}$ fee rate is needed
+ & a zero fee is real (miners accepted free transactions), but has no logarithm. \\
+Money trail only an edge list
+ & derived \code{receives\_}\allowbreak\code{from\_}\allowbreak\code{illicit}: the transaction spends an output of an illicit
+   transaction
+ & turns the graph into a feature that a test can use (Test 4). \\
+\bottomrule
+\end{tabularx}}
+
+We also checked Bitcoin's accounting identity, inputs $=$ outputs $+$ fee: it holds for 100\%
+of rows, so amounts were not corrupted. There were no duplicate transactions.
+
+%-----------------------------------------------------------------------
+\section{What changed after preparation}
+
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{3.0cm} L{1.7cm} Y@{}}
+\toprule
+\textbf{Measure} & \textbf{Before} & \textbf{After} \\
+\midrule
+Transaction rows & 203{,}769 & 202{,}804 (965 dropped) \\
+Transaction attributes & 185 & 196 (11 derived or encoded) \\
+Missing cells (named features) & 16{,}405 & 0 \\
+Wallet rows & 1{,}268{,}260 & 822{,}942 (one per address) \\
+Wallet duplicate rows & 347{,}569 & 0 \\
+Wallets counted more than once & 61{,}487 & 0 \\
+Wallet attributes & 58 & 66 (pattern and one-hot class) \\
+Fee-rate outliers & 11{,}303 & 11{,}303, flagged and analysed on $\log_{10}$ \\
+Labelled transactions for tests & 46{,}564 & 46{,}045 (4{,}545 illicit, 41{,}500 licit) \\
+Labelled wallets for tests & 265{,}354 & 265{,}354 (14{,}266 illicit, 251{,}088 licit) \\
+\bottomrule
+\end{tabularx}}
+
+The wallet table shrank by 35\%, and no address was lost: all 822{,}942 remain, each counted
+once. On the log scale the fee rate is close to symmetric (skewness 0.27 for licit
+transactions), whereas the raw amounts span eight orders of magnitude
+($2.7\times10^{-5}$ to 6{,}335 BTC). The encoded label and
+the new money-trail and fee-rate features are what make Tests 3 and 4 possible.
+
+%-----------------------------------------------------------------------
+\section{Basic questions and problem statement}
+
+\minihead{Basic questions}
+\begin{enumerate}[label=\arabic*.]
+  \item \emph{How common is fraud?} 9.9\% of labelled transactions are illicit (4{,}545 of
+    46{,}045); 77\% of all transactions carry no label.
+  \item \emph{Does fraud move more money?} No: the median illicit transaction moves 0.12 BTC,
+    the median licit one 0.48 BTC.
+  \item \emph{Is fraud steady over time?} No: the illicit share of a time step ranges from
+    0.3\% (step 46) to 36.5\% (step 13) (Figure~\ref{fig:time}).
+\end{enumerate}
+
+\begin{figure}[!ht]
+  \figfile{fig_timeline.pdf}{3.6cm}
+  \caption{The illicit share swings from step to step and falls to near zero right after the
+  dark-market shutdown at step 43 reported by Weber et al.; the shaded windows are those of
+  Test 5.}
+  \label{fig:time}
+\end{figure}
+
+\begin{figure}[!ht]
+  \figfile{fig_outputs.pdf}{3.4cm}
+  \caption{65\% of illicit transactions pay a single receiver; 76\% of licit ones pay two,
+  the typical ``payment plus change''.}
+  \label{fig:out}
+\end{figure}
+
+\begin{figure}[!ht]
+  \figfile{fig_feerate.pdf}{3.4cm}
+  \caption{Illicit fee rates pile up in a narrow spike at about 100--120 sat/B; licit fee
+  rates spread over two orders of magnitude.}
+  \label{fig:fee}
+\end{figure}
+
+\begin{figure}[!ht]
+  \figfile{fig_wallets.pdf}{3.4cm}
+  \caption{63\% of illicit wallets both receive and send money (pass-through), against 11\%
+  of licit wallets, most of which only receive.}
+  \label{fig:wal}
+\end{figure}
+
+\minihead{Our problem statements}
+\noindent\fbox{\begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}
+\textbf{P1 (primary).} Does illicit money move in a different \emph{shape} from legitimate
+money: forwarded whole to a single receiver, through wallets that pass it straight on?
+(Tests 1, 2)
+
+\smallskip
+\textbf{P2.} Does fraud leave a \emph{fingerprint} in the fees: are illicit fee rates more
+uniform, as automated software with a fixed fee would produce? (Test 3)
+
+\smallskip
+\textbf{P3.} Does fraud \emph{follow the money trail}: is a transaction that spends illicit
+money itself more likely to be illicit, comparing like with like in time? (Test 4)
+
+\smallskip
+\textbf{P4.} Did the dark-market shutdown at step 43 lower the illicit share? (Test 5)
+\end{minipage}}
+
+\field{How they are novel:}{the basic questions compare totals and averages, one row at a
+time. Ours ask about \emph{behaviour}: how money is split (outputs), how a wallet uses it
+(receive / send), how \emph{variable} the fees are rather than how high, and what the
+\emph{previous} transaction on the money trail was, which no single row records and has to
+be derived from the graph. Elliptic++ has so far been used mainly to train classifiers; we
+test these behaviours directly, with effect sizes.}
+
+%-----------------------------------------------------------------------
+\section{Statistical inferences}
+
+\field{Rows tested:}{only labelled rows: 46{,}045 transactions (4{,}545 illicit, 41{,}500
+licit) and 265{,}354 wallets (14{,}266 illicit, 251{,}088 licit). All tests use
+$\alpha=0.05$. Hypotheses, sides and the smallest differences that matter were fixed in the
+code before any test statistic was computed. Where a p-value is below the smallest number a
+computer can store ($\approx10^{-308}$), we give its order of magnitude from the log
+p-value.}
+
+%------------------------------------------------------------ Test 1
+\needspace{18\baselineskip}
+\subsection*{Test 1 (P1): do illicit transactions pay a single receiver more often?}
+
+\tpart{a}{Hypotheses, written before running the test}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+$H_0$ & $p_{\text{ill}}-p_{\text{lic}}\le0$ \\
+$H_1$ & $p_{\text{ill}}-p_{\text{lic}}>0$ \\
+Significance level & $\alpha=0.05$ \\
+Side & one-sided (right) \\
+Test & two-proportion $z$-test (pooled) \\
+Smallest difference that matters & 10 percentage points \\
+\bottomrule
+\end{tabularx}}
+
+$p$: share of transactions with exactly one output address. One-sided, because P1 claims
+illicit money is forwarded whole. A transaction with one receiver and no change output is
+the signature of ``sweeping'' an address empty; 10 points is the gap at which an analyst
+screening transactions would gain from the rule.
+
+\tpart{b}{Other tests we considered}
+The response is binary, the two groups are independent and large (the smallest expected cell
+count is 564), so the normal approximation of the $z$-test holds, and it gives the difference
+in proportions directly.
+\par
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
+\toprule
+\textbf{Also considered} & \textbf{Why we did not use it} \\
+\midrule
+Pearson $\chi^2$ (2$\times$2) & the same test squared ($\chi^2=12{,}780=z^2$, d.f.~1), but
+two-sided only. \\
+Fisher's exact test & exact, but built for small counts; here it agrees (OR $=25.9$,
+$p<10^{-300}$) and adds nothing. \\
+Welch $t$ on \code{num\_output\_}\allowbreak\code{addresses} & compares means of a count driven by licit
+batch payouts with up to 13{,}107 outputs (mean 6.17 vs 1.35); it answers a different
+question. \\
+\bottomrule
+\end{tabularx}}
+
+\tpart{c}{Result}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+Estimate & $+58.2$ points (64.9\% illicit, 6.7\% licit) \\
+95\% confidence interval (Newcombe) & $+56.8$ to $+59.6$ points \\
+Test statistic (d.f.) & $z=113.0$ (none: normal reference) \\
+p-value & $\approx10^{-2778}$ \\
+Decision & reject $H_0$ \\
+\bottomrule
+\end{tabularx}}
+
+Illicit transactions pay a single receiver nearly ten times as often as licit ones. The whole
+interval lies far beyond 10 points, so the difference matters. Together with the 89\% of
+illicit transactions that have a single input (licit: 50\%), the typical illicit transaction
+is ``one address in, one address out''.
+
+%------------------------------------------------------------ Test 2
+\needspace{18\baselineskip}
+\subsection*{Test 2 (P1): do illicit wallets pass money straight through?}
+
+\tpart{a}{Hypotheses, written before running the test}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+$H_0$ & wallet pattern and class are independent \\
+$H_1$ & they are not independent \\
+Significance level & $\alpha=0.05$ \\
+Side & upper tail of $\chi^2$ (any departure) \\
+Test & Pearson $\chi^2$ test of independence, 2$\times$3 \\
+Smallest difference that matters & Cram\'er's $V\ge0.10$ and a 10-point gap in the
+pass-through share \\
+\bottomrule
+\end{tabularx}}
+
+Pattern: \emph{receive only}, \emph{pass-through} (receives and sends) or \emph{send only}
+(received before the data window). $V=0.10$ is the conventional ``small'' association; we
+add a 10-point gap so that the effect can be read in wallets.
+
+\tpart{b}{Other tests we considered}
+Two nominal variables, one with three levels, and independent wallets: this is the setting
+of the $\chi^2$ test of independence. The smallest expected count is 2{,}035, far above 5.
+\par
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
+\toprule
+\textbf{Also considered} & \textbf{Why we did not use it} \\
+\midrule
+$G$-test (likelihood ratio) & asymptotically equivalent; same decision ($G=21{,}428$,
+d.f.~2). Pearson's is the standard to report. \\
+Two-proportion $z$ on pass-through only & throws away the other two patterns; it agrees
+($z=172.1$). We use it for the estimate below. \\
+Mann--Whitney on \code{total\_txs} & tests whether one class has more transactions, not
+\emph{how} wallets use money. \\
+\bottomrule
+\end{tabularx}}
+
+\tpart{c}{Result}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+Estimate & pass-through share $+51.8$ points (63.3\% vs 11.5\%); Cram\'er's $V=0.338$ \\
+95\% confidence interval & $+51.0$ to $+52.6$ points; $V$: 0.334 to 0.343 (bootstrap) \\
+Test statistic (d.f.) & $\chi^2=30{,}397$ (2) \\
+p-value & $\approx10^{-6601}$ \\
+Decision & reject $H_0$ \\
+\bottomrule
+\end{tabularx}}
+
+The association is moderate ($V\approx0.34$) and both intervals clear our thresholds. The
+standardised residuals show where it comes from: illicit pass-through $+155$, illicit
+receive-only $-67$. Fraud-linked wallets act as relays, not as savings.
+
+%------------------------------------------------------------ Test 3
+\needspace{18\baselineskip}
+\subsection*{Test 3 (P2): are illicit fee rates less variable?}
+
+\tpart{a}{Hypotheses, written before running the test}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+$H_0$ & $\sigma_{\text{ill}}\ge\sigma_{\text{lic}}$ \\
+$H_1$ & $\sigma_{\text{ill}}<\sigma_{\text{lic}}$ \\
+Significance level & $\alpha=0.05$ \\
+Side & one-sided (left) \\
+Test & Brown--Forsythe test \\
+Smallest difference that matters & SD ratio $\sigma_{\text{ill}}/\sigma_{\text{lic}}\le0.80$ \\
+\bottomrule
+\end{tabularx}}
+
+$\sigma$: standard deviation of $\log_{10}$ fee rate (4{,}545 illicit, 41{,}452 licit; 48
+zero-fee licit rows excluded). One-sided, because P2 claims uniformity. A spread 20\% narrower
+is what a monitoring rule could pick up.
+
+\tpart{b}{Other tests we considered}
+We compare spreads, not means. Brown--Forsythe (Levene with the median) runs a $t$-test on
+the absolute deviations from each group's median, so it does not need normality and gives a
+one-sided p-value.
+\par
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
+\toprule
+\textbf{Also considered} & \textbf{Why we did not use it} \\
+\midrule
+$F$-test of variances & valid only for normal data; illicit log rates are skewed (1.22) and
+Shapiro--Wilk rejects normality ($p\approx10^{-59}$). It agrees ($F=0.31$). \\
+Bartlett's test & just as sensitive to non-normality ($\chi^2=2{,}051$). \\
+Fligner--Killeen & rank-based and also valid; agrees ($\chi^2=2{,}538$), but two-sided only. \\
+Wilcoxon signed-rank, by time step & controls for the fee market changing over time; we run
+it as a check (below). \\
+\bottomrule
+\end{tabularx}}
+
+\tpart{c}{Result}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+Estimate & SD ratio 0.559 (0.255 vs 0.456 in $\log_{10}$) \\
+95\% confidence interval & 0.543 to 0.575 (bootstrap, 2{,}000 resamples) \\
+Test statistic (d.f.) & $t=-57.87$ (45{,}995); $F=t^2=3{,}349$ \\
+p-value & $\approx10^{-729}$ \\
+Decision & reject $H_0$ \\
+\bottomrule
+\end{tabularx}}
+
+Illicit fee rates are about 44\% less spread out, and the whole interval is below 0.80. The
+effect is not a by-product of time: within the same time step, illicit fees are the narrower
+group in 41 of 45 steps (median SD 0.082 vs 0.206; Wilcoxon $W=106$, $p=2.3\times10^{-7}$).
+The fingerprint is concrete: 25.4\% of illicit transactions pay a fee of exactly 0.0002 BTC
+(licit: 8.7\%), typically on a 192-byte, one-in-one-out transaction, which gives the spike at
+104 sat/B in Figure~\ref{fig:fee}.
+
+%------------------------------------------------------------ Test 4
+\needspace{18\baselineskip}
+\subsection*{Test 4 (P3): does fraud follow the money trail?}
+
+\tpart{a}{Hypotheses, written before running the test}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+$H_0$ & common odds ratio $\text{OR}_{\text{MH}}\le1$ \\
+$H_1$ & $\text{OR}_{\text{MH}}>1$ \\
+Significance level & $\alpha=0.05$ \\
+Side & one-sided (right) \\
+Test & Cochran--Mantel--Haenszel (CMH), stratified by time step \\
+Smallest difference that matters & OR $\ge2$ \\
+\bottomrule
+\end{tabularx}}
+
+Exposure: the transaction spends an output of an illicit transaction. Outcome: it is
+illicit. We stratify because a busy fraud period (Figure~\ref{fig:time}) makes both the
+exposure and the outcome common at once, which alone would create an association. An OR of 2
+doubles the odds, the level at which flagging a payer's payees is worth an analyst's time.
+
+\tpart{b}{Other tests we considered}
+A 2$\times$2 table in each of 48 time steps, independent transactions: CMH tests a common
+odds ratio across strata while comparing like with like in time.
+\par
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
+\toprule
+\textbf{Also considered} & \textbf{Why we did not use it} \\
+\midrule
+Pearson $\chi^2$ / Fisher, pooled & ignore time and so are confounded: crude OR 31.9 vs 19.3
+stratified. \\
+Logistic regression with step dummies & agrees in direction (OR 24.7, 21.4 to 28.6), but
+needs a model with 49 parameters; CMH is the direct test. \\
+Breslow--Day (homogeneity) & not a test of $H_0$ but of CMH's assumption; run below. \\
+\bottomrule
+\end{tabularx}}
+
+\tpart{c}{Result}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+Estimate & $\text{OR}_{\text{MH}}=19.3$ (73.8\% vs 8.1\% illicit) \\
+95\% confidence interval & 16.7 to 22.3 \\
+Test statistic (d.f.) & $\chi^2_{\text{CMH}}=2{,}906$ (1) \\
+p-value & $\approx10^{-633}$ \\
+Decision & reject $H_0$ \\
+\bottomrule
+\end{tabularx}}
+
+Even within the same two weeks, a transaction that spends illicit money has 19 times the odds
+of being illicit itself; risk ratio 9.1 (8.7 to 9.5). Breslow--Day rejects a common OR
+($\chi^2=235$, 38 d.f., $p\approx10^{-29}$): the size of the effect varies over time. Its
+direction does not: the odds ratio is at least 2 in 46 of the 48 time steps (median 15.3), so
+the conclusion stands.
+
+%------------------------------------------------------------ Test 5
+\needspace{18\baselineskip}
+\subsection*{Test 5 (P4): did the illicit share fall after the dark-market shutdown?}
+
+\tpart{a}{Hypotheses, written before running the test}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+$H_0$ & $\mu_{\text{after}}-\mu_{\text{before}}\ge0$ \\
+$H_1$ & $\mu_{\text{after}}-\mu_{\text{before}}<0$ \\
+Significance level & $\alpha=0.05$ \\
+Side & one-sided (left) \\
+Test & Welch $t$-test on per-step illicit shares \\
+Smallest difference that matters & 5 percentage points \\
+\bottomrule
+\end{tabularx}}
+
+$\mu$: mean illicit share per time step, steps 36--42 (before) and 43--49 (after), 7 each.
+One-sided, because a shutdown should remove fraud. 5 points is about half the pre-shutdown
+level, a drop that would show in an exchange's compliance workload.
+
+\tpart{b}{Other tests we considered}
+The unit is the time step, not the transaction: transactions in one step share a market, so
+pooling them would overstate the evidence. With 7 values per group we need a small-sample
+test that does not assume equal variances.
+\par
+{\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.3cm} Y@{}}
+\toprule
+\textbf{Also considered} & \textbf{Why we did not use it} \\
+\midrule
+Pooled two-proportion $z$ on 15{,}014 transactions & treats transactions as independent:
+$z=-15.7$, $p=7\times10^{-56}$. Far too confident. \\
+Student $t$ & variances look equal (Levene $p=0.90$), giving the same $t$; Welch was fixed in
+advance. \\
+Mann--Whitney (exact) & robust to the non-normal ``after'' group (Shapiro $p=0.04$); agrees:
+$U=9$, $p=0.027$. \\
+Exact permutation test & all 3{,}432 splits; agrees: $p=0.020$. \\
+\bottomrule
+\end{tabularx}}
+
+\tpart{c}{Result}
+{\small
+\begin{tabularx}{\linewidth}{@{}K{3.4cm} Y@{}}
+\toprule
+Estimate & $-5.4$ points (3.7\% after, 9.1\% before) \\
+95\% confidence interval & $-10.2$ to $-0.5$ points \\
+Test statistic (d.f.) & $t=-2.43$ (11.9) \\
+p-value & 0.016 \\
+Decision & reject $H_0$ \\
+\bottomrule
+\end{tabularx}}
+
+The illicit share did fall after step 43, and all four tests agree. Whether the fall
+\emph{matters} is not settled: the estimate just passes our 5 points, but the interval
+reaches $-0.5$, so a trivial drop cannot be ruled out with 7 steps. The shares at steps 48
+and 49 (7.6\%, 11.8\%) show fraud returning, so the effect looks temporary.
+
+%-----------------------------------------------------------------------
+\section{Limitations}
+
+\begin{itemize}
+  \item \textbf{Labels come from one firm.} ``Illicit'' is Elliptic's judgement, from its own
+  heuristics; if those heuristics follow the money trail, Test 4 partly measures the
+  labelling. We cannot check this from the data.
+  \item \textbf{77\% of transactions are unknown.} Our results hold for labelled transactions,
+  which may be the easier cases to label.
+  \item \textbf{Association, not cause.} We show how fraud-linked money behaves, not that the
+  behaviour causes or proves fraud; licit services (exchanges sweeping deposits) also
+  forward money whole.
+  \item \textbf{Huge samples.} With 46{,}045 rows almost any difference is significant, which
+  is why we judge each result by its interval against a pre-set threshold.
+  \item \textbf{Shutdown dating.} Step 43 is the date reported by Weber et al.; we did not
+  date it independently, and with 7 steps per side Test 5 has low power.
+  \item \textbf{One period.} The data covers 49 two-week steps of Bitcoin; fee markets and
+  fraud methods have changed since.
+\end{itemize}
+
+{\footnotesize\textbf{References.} M.~Weber et al., ``Anti-Money Laundering in Bitcoin:
+Experimenting with Graph Convolutional Networks for Financial Forensics'', KDD Workshop on
+Anomaly Detection in Finance, 2019. Y.~Elmougy and L.~Liu, ``Demystifying Fraudulent
+Transactions and Illicit Nodes in the Bitcoin Network for Financial Forensics'', KDD 2023.\par}
+
+\end{document}

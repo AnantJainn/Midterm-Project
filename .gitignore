@@ -1,0 +1,5 @@
+# raw and processed data are large (about 2 GB); download them with the README steps
+data/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

@@ -1,0 +1,89 @@
+{
+  "tx_before": {
+    "rows": 203769,
+    "cols": 185,
+    "cells": 37697265,
+    "class_counts": {
+      "unknown": 157205,
+      "licit": 42019,
+      "illicit": 4545
+    },
+    "rows_missing_named": 965,
+    "rows_missing_all_named": 965,
+    "missing_by_class": {
+      "licit": 519,
+      "unknown": 446
+    },
+    "missing_cells_total": 16405,
+    "duplicate_rows": 0,
+    "duplicate_txId": 0,
+    "zero_fee": 67,
+    "fee_rate_above_iqr_fence": 11303,
+    "fee_rate_max": 22614.244444444445,
+    "fee_rate_median": 99.6716104674603,
+    "total_BTC_above_iqr_fence": 35265,
+    "label_dtype": "int64",
+    "accounting_identity_holds": 1.0
+  },
+  "tx_after": {
+    "rows": 202804,
+    "cols": 196,
+    "cells": 39749584,
+    "class_counts": {
+      "unknown": 156759,
+      "licit": 41500,
+      "illicit": 4545
+    },
+    "missing_named": 0,
+    "zero_fee_rows_excluded_from_log": 67,
+    "fee_rate_outliers_flagged": 11303,
+    "added_columns": [
+      "label",
+      "fee_rate",
+      "log10_fee_rate",
+      "single_output",
+      "single_input",
+      "fee_rate_outlier",
+      "receives_from_illicit",
+      "n_parents",
+      "is_illicit",
+      "is_licit",
+      "is_unknown"
+    ]
+  },
+  "edges": {
+    "rows": 234355,
+    "receives_from_illicit_tx": 1619
+  },
+  "w_before": {
+    "rows": 1268260,
+    "cols": 58,
+    "cells": 73559080,
+    "unique_addresses": 822942,
+    "exact_duplicate_rows": 347569,
+    "missing_cells": 0,
+    "class_counts": {
+      "unknown": 557588,
+      "licit": 251088,
+      "illicit": 14266
+    }
+  },
+  "w_after_dedup_rows": 920691,
+  "w_addresses_in_several_steps": 61487,
+  "w_after": {
+    "rows": 822942,
+    "cols": 66,
+    "cells": 54314172,
+    "class_counts": {
+      "unknown": 557588,
+      "licit": 251088,
+      "illicit": 14266
+    },
+    "pattern_counts": {
+      "receive_only": 422824,
+      "pass_through": 213800,
+      "send_only": 186318
+    },
+    "btc_transacted_total_above_iqr_fence": 145040
+  }
+}
