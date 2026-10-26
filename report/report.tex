@@ -95,9 +95,9 @@
 {\small
 \begin{tabularx}{\linewidth}{@{}K{2.4cm} Y@{}}
 \toprule
-Group name & \todo{group name} \\
+Group name & Innovate and Conquer \\
 Dataset & Elliptic++ (Elmougy \& Liu, KDD 2023): \url{github.com/git-disl/EllipticPlusPlus} \\
-Code & \todo{github.com/\textless user\textgreater/\textless repo\textgreater} (scripts \code{src/01--03}, README, results) \\
+Code & \url{https://github.com/AnantJainn/Midterm-Project} (scripts \code{src/01--03}, README, results) \\
 \bottomrule
 \end{tabularx}}
 
@@ -107,8 +107,8 @@ Code & \todo{github.com/\textless user\textgreater/\textless repo\textgreater} (
 \toprule
 \textbf{\#} & \textbf{Name} & \textbf{Roll no.} & \textbf{Institute email} & \textbf{Contribution} \\
 \midrule
-1 & \todo{name} & \todo{roll no.} & \todo{email} & \todo{e.g.\ dataset, preparation, Tests 1--2 (1, 2, 3, 5)} \\
-2 & \todo{name} & \todo{roll no.} & \todo{email} & \todo{e.g.\ EDA, Tests 3--5, limitations, README (4, 5, 6)} \\
+1 & Anant Jain & PhD25002 & anantj@iiitd.ac.in & Dataset and size check, data preparation and before/after (1, 2, 3); Tests 1, 2 and 4 (5); code and README (6) \\
+2 & Gauranshi Gupta & PhD25005 & gauranshig@iiitd.ac.in & EDA, basic questions and problem statements (4); Tests 3 and 5 (5); limitations; report writing \\
 \bottomrule
 \end{tabularx}}
 \vspace{12pt}
@@ -320,7 +320,8 @@ computer can store ($\approx10^{-308}$), we give its order of magnitude from the
 p-value.}
 
 %------------------------------------------------------------ Test 1
-\needspace{18\baselineskip}
+
+\needspace{18\baselineskip}
 \subsection*{Test 1 (P1): do illicit transactions pay a single receiver more often?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -389,7 +390,8 @@ illicit transactions that have a single input (licit: 50\%), the typical illicit
 is ``one address in, one address out''.
 
 %------------------------------------------------------------ Test 2
-\needspace{18\baselineskip}
+
+\needspace{18\baselineskip}
 \subsection*{Test 2 (P1): do illicit wallets pass money straight through?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -453,7 +455,8 @@ Pearson residuals $r_{ik}$ show where it comes from: illicit pass-through $+155$
 receive-only $-67$. Fraud-linked wallets act as relays, not as savings.
 
 %------------------------------------------------------------ Test 3
-\needspace{18\baselineskip}
+
+\needspace{18\baselineskip}
 \subsection*{Test 3 (P2): are illicit fee rates less variable?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -520,7 +523,8 @@ The fingerprint is concrete: 25.4\% of illicit transactions pay a fee of exactly
 104 sat/B in Figure~\ref{fig:fee}.
 
 %------------------------------------------------------------ Test 4
-\needspace{18\baselineskip}
+
+\needspace{18\baselineskip}
 \subsection*{Test 4 (P3): does fraud follow the money trail?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -587,7 +591,8 @@ direction does not: the odds ratio is at least 2 in 46 of the 48 time steps (med
 the conclusion stands.
 
 %------------------------------------------------------------ Test 5
-\needspace{18\baselineskip}
+
+\needspace{18\baselineskip}
 \subsection*{Test 5 (P4): did the illicit share fall after the dark-market shutdown?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -670,6 +675,23 @@ and 49 (7.6\%, 11.8\%) show fraud returning, so the effect looks temporary.
   \item \textbf{One period.} The data covers 49 two-week steps of Bitcoin; fee markets and
   fraud methods have changed since.
 \end{itemize}
+
+%-----------------------------------------------------------------------
+\section{Conclusion}
+
+Fraud-linked Bitcoin money moves differently from legitimate money, and the differences are
+large, not merely significant: four of our five tests clear their pre-set thresholds with the
+whole 95\% interval. Illicit money is forwarded whole (65\% vs 7\% single-receiver
+transactions), through wallets that pass it on (63\% vs 11\%), with a fee fingerprint of
+automated software (spread 44\% narrower, a quarter paying exactly 0.0002 BTC), and it
+follows the money trail (common odds ratio 19, within the same time step). The fifth test
+shows that the dark-market shutdown lowered the illicit share, but we cannot show the fall
+was large or lasting.
+
+These are simple, explainable red flags (one address out, pass-through wallet, fixed default
+fee, money received from a known illicit transaction) that an analyst can apply without a
+trained model. The next step is to check whether they hold for the 156{,}759 unlabelled
+transactions and for current Bitcoin data.
 
 {\footnotesize\textbf{References.} M.~Weber et al., ``Anti-Money Laundering in Bitcoin:
 Experimenting with Graph Convolutional Networks for Financial Forensics'', KDD Workshop on
