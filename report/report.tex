@@ -40,6 +40,7 @@
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{needspace}
+\usepackage{flushend}                  % balances the two columns on the last page
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={\projecttitle},
@@ -54,8 +55,8 @@
 \titlespacing*{\section}{0pt}{12pt}{3pt}
 \titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.5em}{}
 \titlespacing*{\subsection}{0pt}{10pt}{2pt}
-\newcommand{\sectionbreak}{\needspace{10\baselineskip}}
-\newcommand{\subsectionbreak}{\needspace{10\baselineskip}}
+\newcommand{\sectionbreak}{\Needspace{10\baselineskip}}
+\newcommand{\subsectionbreak}{\Needspace{10\baselineskip}}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
@@ -71,8 +72,8 @@
 \newcommand{\eg}[1]{\textcolor{eg}{#1}}
 \newcommand{\egblock}[1]{{\color{eg}#1\par}}
 \newcommand{\field}[2]{\textbf{#1}~#2\par}
-\newcommand{\tpart}[2]{\par\needspace{12\baselineskip}\smallskip\textbf{#1)~#2}\par}
-\newcommand{\minihead}[1]{\par\needspace{8\baselineskip}\smallskip\textbf{#1}\par}
+\newcommand{\tpart}[2]{\par\Needspace{7\baselineskip}\smallskip\textbf{#1)~#2}\par}
+\newcommand{\minihead}[1]{\par\Needspace{8\baselineskip}\smallskip\textbf{#1}\par}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\todo}[1]{\textcolor{todo}{\textbf{TODO:} #1}}
 \newcommand{\figfile}[2]{%
@@ -152,6 +153,21 @@ wallets: $822{,}942\times66=54{,}314{,}172\ge3{,}000{,}000$. Both tables meet th
 on their own. Even the 17 named transaction features alone give
 $202{,}804\times17=3{,}447{,}668$.}
 
+\minihead{Labels after cleaning}
+{\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{@{}L{1.5cm} Y Y Y@{}}
+\toprule
+ & \textbf{Illicit} & \textbf{Licit} & \textbf{Unknown} \\
+\midrule
+Transactions & 4{,}545 (2.2\%) & 41{,}500 (20.5\%) & 156{,}759 (77.3\%) \\
+Wallets & 14{,}266 (1.7\%) & 251{,}088 (30.5\%) & 557{,}588 (67.8\%) \\
+\bottomrule
+\end{tabularx}}
+
+Unknown rows stay in the data but not in the tests (Section~2). The labelled rows that the
+tests use still meet the size requirement: $46{,}045\times196=9{,}024{,}820$ transaction cells
+and $265{,}354\times66=17{,}513{,}364$ wallet cells.
+
 \minihead{Key features}
 {\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.6cm} L{1.3cm} Y@{}}
@@ -166,15 +182,18 @@ $202{,}804\times17=3{,}447{,}668$.}
 \code{total\_BTC} & continuous & total value moved (BTC) \\
 \code{Time step} & discrete & 1--49, about two weeks each \\
 \code{num\_txs\_as\_sender}, \code{\_receiver} & discrete & a wallet's transactions sending / receiving money \\
-\code{lifetime\_in\_blocks} & discrete & blocks between a wallet's first and last appearance \\
+\code{lifetime\_}\allowbreak\code{in\_blocks} & discrete & blocks between a wallet's first and last appearance \\
 \bottomrule
 \end{tabularx}}
 
 %-----------------------------------------------------------------------
 \section{Data preparation}
 
+\begin{table*}[!t]
+\caption{Data preparation: every issue we found in the raw files, what we did, and why.}
+\label{tab:prep}
 {\footnotesize
-\begin{tabularx}{\linewidth}{@{}L{1.9cm} L{2.3cm} Y@{}}
+\begin{tabularx}{\textwidth}{@{}L{3.6cm} L{5.4cm} Y@{}}
 \toprule
 \textbf{Issue found} & \textbf{What we did} & \textbf{Why, and not the alternative} \\
 \midrule
@@ -211,6 +230,10 @@ Money trail only an edge list
  & turns the graph into a feature that a test can use (Test 4). \\
 \bottomrule
 \end{tabularx}}
+\end{table*}
+
+Table~\ref{tab:prep} lists each issue we found in the raw files, what we did about it, and
+why we chose that over the alternative.
 
 We also checked Bitcoin's accounting identity, inputs $=$ outputs $+$ fee: it holds for 100\%
 of rows, so amounts were not corrupted. There were no duplicate transactions.
@@ -245,7 +268,7 @@ the new money-trail and fee-rate features are what make Tests 3 and 4 possible.
 %-----------------------------------------------------------------------
 \section{Basic questions and problem statement}
 
-\minihead{Basic questions}
+\smallskip\textbf{Basic questions}\par
 \begin{enumerate}[label=\arabic*.]
   \item \emph{How common is fraud?} 9.9\% of labelled transactions are illicit (4{,}545 of
     46{,}045); 77\% of all transactions carry no label.
@@ -253,10 +276,13 @@ the new money-trail and fee-rate features are what make Tests 3 and 4 possible.
     the median licit one 0.48 BTC.
   \item \emph{Is fraud steady over time?} No: the illicit share of a time step ranges from
     0.3\% (step 46) to 36.5\% (step 13) (Figure~\ref{fig:time}).
+  \item \emph{Does fraud pay more in fees?} Per byte slightly more (median 105 vs 90 sat/B),
+    but illicit transactions are smaller (median 192 vs 372 bytes), so the median fee is
+    lower (0.00023 vs 0.0004 BTC).
 \end{enumerate}
 
 \begin{figure}[!ht]
-  \figfile{fig_timeline.pdf}{3.6cm}
+  \figfile{fig_timeline.pdf}{4.3cm}
   \caption{The illicit share swings from step to step and falls to near zero right after the
   dark-market shutdown at step 43 reported by Weber et al.; the shaded windows are those of
   Test 5.}
@@ -264,7 +290,7 @@ the new money-trail and fee-rate features are what make Tests 3 and 4 possible.
 \end{figure}
 
 \begin{figure}[!ht]
-  \figfile{fig_outputs.pdf}{3.4cm}
+  \figfile{fig_outputs.pdf}{4.0cm}
   \caption{65\% of illicit transactions pay a single receiver; 76\% of licit ones pay two,
   the typical ``payment plus change''.}
   \label{fig:out}
@@ -284,6 +310,7 @@ the new money-trail and fee-rate features are what make Tests 3 and 4 possible.
   \label{fig:wal}
 \end{figure}
 
+\Needspace{13\baselineskip}
 \minihead{Our problem statements}
 \noindent\fbox{\begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}
 \textbf{P1 (primary).} Does illicit money move in a different \emph{shape} from legitimate
@@ -321,7 +348,7 @@ p-value.}
 
 %------------------------------------------------------------ Test 1
 
-\needspace{18\baselineskip}
+\Needspace{12\baselineskip}
 \subsection*{Test 1 (P1): do illicit transactions pay a single receiver more often?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -391,7 +418,7 @@ is ``one address in, one address out''.
 
 %------------------------------------------------------------ Test 2
 
-\needspace{18\baselineskip}
+\Needspace{12\baselineskip}
 \subsection*{Test 2 (P1): do illicit wallets pass money straight through?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -456,7 +483,7 @@ receive-only $-67$. Fraud-linked wallets act as relays, not as savings.
 
 %------------------------------------------------------------ Test 3
 
-\needspace{18\baselineskip}
+\Needspace{12\baselineskip}
 \subsection*{Test 3 (P2): are illicit fee rates less variable?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -524,7 +551,7 @@ The fingerprint is concrete: 25.4\% of illicit transactions pay a fee of exactly
 
 %------------------------------------------------------------ Test 4
 
-\needspace{18\baselineskip}
+\Needspace{12\baselineskip}
 \subsection*{Test 4 (P3): does fraud follow the money trail?}
 
 \tpart{a}{Hypotheses, written before running the test}
@@ -592,7 +619,7 @@ the conclusion stands.
 
 %------------------------------------------------------------ Test 5
 
-\needspace{18\baselineskip}
+\Needspace{12\baselineskip}
 \subsection*{Test 5 (P4): did the illicit share fall after the dark-market shutdown?}
 
 \tpart{a}{Hypotheses, written before running the test}
