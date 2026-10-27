@@ -40,7 +40,6 @@
 \usepackage{enumitem}
 \usepackage{titlesec}
 \usepackage{needspace}
-\usepackage{flushend}                  % balances the two columns on the last page
 \usepackage[font=small,labelfont=bf]{caption}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{pdftitle={\projecttitle},
@@ -704,6 +703,7 @@ and 49 (7.6\%, 11.8\%) show fraud returning, so the effect looks temporary.
 \end{itemize}
 
 %-----------------------------------------------------------------------
+\newpage                               % in two-column mode: start the next column
 \section{Conclusion}
 
 Fraud-linked Bitcoin money moves differently from legitimate money, and the differences are
